@@ -70,7 +70,7 @@ function get_embedded_profile_form() {
 /**
  * Validate the submitted form data, update the database and return a message.
  *
- * @param $user_id: The user id number.
+ * @param $user_id: The user's id number.
  */
 function embedded_profile_form_update( $user_id ) {
 

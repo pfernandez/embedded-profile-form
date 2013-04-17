@@ -3,8 +3,8 @@
  * The markup for the embedded user profile settings form. This file can be
  * overidden by copying it into your theme folder and modifying it as you see fit.
  */
- 
- 
+
+
 $current_user = wp_get_current_user();
 
 // Check for empty fields and provide some default form values.
@@ -27,10 +27,10 @@ using the commented-out form fields further on down the page.
 if( ! empty( $meta['occupation'] ) )
     $occupation = $meta['occupation'];
 */
-
 ?>
 
-<form class="profile-form" method="post" action="" enctype="multipart/form-data">
+<form class="profileform" method="post" action="" enctype="multipart/form-data"
+    style="margin:0;">
     <fieldset>
     
         <label for="first_name">Display Name</label>
@@ -45,13 +45,14 @@ if( ! empty( $meta['occupation'] ) )
         <label for="user_email">Email</label>
         <input type="text" name="USER[user_email]" value="<?php echo $email; ?>">
 
-        <label for="user_pass">New Password</label>
-        <input type="password" name="USER[user_pass]" value="">
-        <label for="user_pass">Reenter Password </label>
-        <input type="password" name="USER[user_pass_2]" value="">
-
         <label for="user_url">Website</label>
         <input type="text" name="USER[user_url]" value="<?php echo $user_url; ?>">
+        
+        <label for="user_pass">New Password</label>
+        <input type="password" name="USER[user_pass]" value="">
+        
+        <label for="user_pass">Reenter Password</label>
+        <input type="password" name="USER[user_pass_2]" value="">
 
         <?php
         /*
@@ -61,12 +62,18 @@ if( ! empty( $meta['occupation'] ) )
         <input type="text" name="META[occupation]" value="<?php echo $occupation ?>">
         */
         ?>
-                    
+        
+        <?php
+        /*
+        Upload a custom avatar.
+        
         <label for="file">Profile Image (500kb max)</label>
-        <input type="file" name="upload" title="Choose a file..." style="line-height: normal;">
-    
-        <label for="save_button"></label>
+        <input type="file" name="upload" title="Choose a file..."
+            style="line-height: normal;">
+        */
+        ?>
+        
         <input type="submit" value="Save Changes" name="submit">
-
+            
     </fieldset>
 </form>

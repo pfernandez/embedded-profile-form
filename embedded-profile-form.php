@@ -56,6 +56,8 @@ function get_embedded_profile_form() {
             get_template_part( 'profile-form' );
         else
             include_once( plugin_dir_path( __FILE__ ) . 'profile-form.php' );
+            
+        add_action( 'wp_print_footer_scripts', 'remove_session_message');
     }
     else {
 
@@ -63,7 +65,19 @@ function get_embedded_profile_form() {
             . "<h2>Oops! You aren't logged in.</h2>"
             . "<h3><a href='" . wp_login_url( get_permalink() ) . "' title='Login'>Log in</a></h3>"
             . "</div";
-    } 
+    }
+}
+
+
+/**
+ * Removes any session messages. Should be called with
+ * add_action( 'wp_print_footer_scripts', 'remove_session_message');
+ * This function removes itself from WordPress actions after it has run.
+ */
+function remove_session_message() {
+    if( isset( $_SESSION['message'] ) )
+        unset( $_SESSION['message'] );
+    remove_action( 'wp_print_footer_scripts', 'remove_session_message');
 }
 
 
@@ -102,7 +116,7 @@ function embedded_profile_form_update( $user_id ) {
 	unset( $USER['user_pass_2'] );
 
 	// Ensure that the password does not contain any spaces.
-	if ( preg_match( '/\s/', $user_pass ) )
+	if ( preg_match( '/\s/', $USER['user_pass'] ) )
 	    return 'Your password may not contain any spaces.';
 	
     // Profile image upload.
@@ -160,9 +174,9 @@ function embedded_profile_form_update( $user_id ) {
 	try {
 	
 	    // Set the new password if it is not empty and is at least 6 characters long.
-	    if( ! empty( $user_pass ) ) {
+	    if( ! empty( $USER['user_pass'] ) ) {
 	    
-	        if( strlen( $user_pass ) < 6 )
+	        if( strlen( $USER['user_pass'] ) < 6 )
                 return 'Your password must be at least six characters long.';
             
             // Since wp_set_password() logs the user out, we'll store their credentials temporarily
@@ -310,12 +324,7 @@ function embedded_profile_form_start_session() {
     if( ! session_id() )
         session_start();
 }
-function embedded_profile_form_end_session() {
-    session_destroy();
-}
 add_action('init', 'embedded_profile_form_start_session', 1);
-add_action('wp_logout', 'embedded_profile_form_end_session');
-add_action('wp_login', 'embedded_profile_form_end_session');
 
 
 /**

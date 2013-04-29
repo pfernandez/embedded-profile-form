@@ -60,11 +60,7 @@ function get_embedded_profile_form() {
         add_action( 'wp_print_footer_scripts', 'remove_session_message');
     }
     else {
-
-        echo "<div class='modal-body'>"
-            . "<h2>Oops! You aren't logged in.</h2>"
-            . "<h3><a href='" . wp_login_url( get_permalink() ) . "' title='Login'>Log in</a></h3>"
-            . "</div";
+        // Nothing to show: not logged in.
     }
 }
 

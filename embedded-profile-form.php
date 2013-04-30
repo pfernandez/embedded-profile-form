@@ -35,7 +35,10 @@ function get_embedded_profile_form() {
 
     // If the submit button was just pressed, validate and update the data.
     if( isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post' ) {
-    
+
+        if( ! isset( $_POST['USER'] ) )
+            return;
+
         // Update the user's info, store the resulting message in a session variable,
         // and refresh the page.
         $_SESSION['message'] = embedded_profile_form_update( wp_get_current_user()->ID );

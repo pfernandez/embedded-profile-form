@@ -23,6 +23,7 @@ if( ! empty( $current_user->user_url ) )
 /*
 Custom fields can be added by creating variables here and
 using the commented-out form fields further on down the page.
+Be sure to properly sanitize fields in embedded_profile_form_update().
 
 if( ! empty( $meta['occupation'] ) )
     $occupation = $meta['occupation'];
@@ -72,7 +73,7 @@ if( ! empty( $meta['occupation'] ) )
             style="line-height: normal;">
         */
         ?>
-        
+        <?php wp_nonce_field( 'form_submitted', 'embedded_profile_form_nonce' ); ?>
         <input type="submit" value="Save Changes" name="submit">
             
     </fieldset>

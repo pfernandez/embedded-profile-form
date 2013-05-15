@@ -34,14 +34,12 @@ add_action( 'wp_enqueue_scripts', 'embedded_profile_form_scripts' );
 function get_embedded_profile_form() {
 
     // If the submit button was just pressed, validate and update the data.
-    if( isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post' ) {
-
-        if( ! isset( $_POST['USER'] ) )
-            return;
-
+    if( isset( $_POST['USER'] ) 
+        && wp_verify_nonce( $_POST['embedded_profile_form_nonce'], 'form_submitted' ) ) {
+        
         // Update the user's info, store the resulting message in a session variable,
         // and refresh the page.
-        $_SESSION['message'] = embedded_profile_form_update( wp_get_current_user()->ID );
+        $_SESSION['message'] = embedded_profile_form_update( get_current_user_id() );
         global $post;
         wp_redirect( home_url() . '/' . get_post( $post )->post_name );
     }
@@ -50,7 +48,7 @@ function get_embedded_profile_form() {
     elseif( is_user_logged_in() ) {
 
         // Get the current user's information.
-        $meta = get_user_meta( wp_get_current_user()->ID, 'profile' );
+        $meta = get_user_meta( get_current_user_id(), 'profile' );
         if( sizeof( $meta ) > 0 )
             $meta = $meta[0];
 
@@ -60,7 +58,7 @@ function get_embedded_profile_form() {
         else
             include_once( plugin_dir_path( __FILE__ ) . 'profile-form.php' );
             
-        add_action( 'wp_print_footer_scripts', 'remove_session_message');
+        add_action( 'wp_print_footer_scripts', 'remove_session_message' );
     }
     else {
         // Nothing to show: not logged in.
@@ -103,6 +101,12 @@ function embedded_profile_form_update( $user_id ) {
     $META = array();
     if( ! empty( $_POST['META'] ) )
         $META = $_POST['META'];
+    
+    // Sanitize fields.
+    $USER['display_name'] = sanitize_text_field( $USER['display_name'] );
+    $USER['first_name'] = sanitize_text_field( $USER['first_name'] );
+    $USER['last_name'] = sanitize_text_field( $USER['last_name'] );
+    $USER['user_url'] = esc_url( $USER['user_url'] );
     
     // Make sure the email address entered is valid.
     if( ! is_email( $USER['user_email'] ) )
@@ -323,7 +327,7 @@ function embedded_profile_form_start_session() {
     if( ! session_id() )
         session_start();
 }
-add_action('init', 'embedded_profile_form_start_session', 1);
+add_action('init', 'embedded_profile_form_start_session' );
 
 
 /**

@@ -41,7 +41,7 @@ function get_embedded_profile_form() {
         // and refresh the page.
         $_SESSION['message'] = embedded_profile_form_update( get_current_user_id() );
         global $post;
-        wp_redirect( home_url() . '/' . get_post( $post )->post_name );
+        wp_redirect( get_permalink( $post->ID ) );
     }
 
     // Display the form to a logged-in user with the current values populated.
